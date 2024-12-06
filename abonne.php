@@ -30,15 +30,23 @@ try {
     <table class="table table-hover">
         <thead>
             <tr class="table-warning">
-                <th scope="row">prenom</th>
-                <th>Modifier</th>
+                <th scope="row">Nom</th>
+                <th>Prenom</th>
+                <th>Date de Naissance</th>
+                <th>Email</th>
+                <th>Modification</th>
+                <th>Suppression</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($abonnes as $abonne) : ?>
                 <tr>
-                    <th scope="row"><?= $abonne['prenom'] ?></th>
+                    <th scope="row"><?= $abonne['nom'] ?></th>
+                    <th ><?= $abonne['prenom'] ?></th>
+                    <th ><?= $abonne['date_naissance'] ?></th>
+                    <th ><?= $abonne['email'] ?></th>
                     <th><a href="modifierabonne.php?id_abonne=<?php echo $abonne['id_abonne'] ?>">Modifier</a></th>
+                    <th><a href="supprimerabonne.php?id_abonne=<?php echo $abonne['id_abonne'] ?>">Supprimer mon compte</a></th>
                 </tr>
             <?php endforeach; ?>
         </tbody>

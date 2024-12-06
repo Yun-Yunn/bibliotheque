@@ -1,7 +1,8 @@
 <?php
 include "header.php";
+require "pdo.php";
 
-function valideDate($date, $format = 'Y-m-d')
+/* function valideDate($date, $format = 'Y-m-d')
 {
     $d = DateTime::createFromFormat($format, $date);
     if ($d && $d->format($format) == $date) {
@@ -9,8 +10,7 @@ function valideDate($date, $format = 'Y-m-d')
     } else {
         return false;
     }
-}
-
+} */
 
 if (isset($_POST["envoyer"])) {
     if (empty($_POST["nom"])) {
@@ -30,16 +30,35 @@ if (isset($_POST["envoyer"])) {
         $error .= "<p> l'email n'est pas conforme</p>";
     }
 
-    if (empty($_POST["date"])) {
+/*     if (empty($_POST["date_naissance"])) {
         $error .= "<p> la date est obligatoire</p>";
-    } elseif (!valideDate($_POST["date"])) {
+    } elseif (($_POST["date_naissance"])) {
         $error .= "<p> la date n'est pas conforme</p>";
+    } */
+    if (empty($error)) {
+        try {
+            $nom = $_POST["nom"];
+            $prenom = $_POST["prenom"];
+            $date_naissance = $_POST["date_naissance"];
+            $email = $_POST["email"];
+            
+            $statement = $pdo->prepare("INSERT INTO abonne(nom,prenom,date_naissance,email) VALUES(:nom,:prenom,:date_naissance,:email)");
+            $statement->execute([
+                ":nom" => $nom,
+                ":prenom" => $prenom,
+                ":date_naissance" => $date_naissance,
+                ":email" => $email
+            ]);
+            header("location:index.php");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
     }
-    if (empty($_POST["phone"])) {
-        $error .= "<p> le phone est obligatoire</p>";
-    } elseif (!preg_match('#^0[1-9]{1}\d{8}$#', $_POST["phone"])) {
-        $error .= "<p> le phone n'est pas conforme</p>";
-    }
+
+
+
+
+
 }
 
 ?>
@@ -82,25 +101,13 @@ if (isset($_POST["envoyer"])) {
         </div>
         <div>
             <label for="exampleInputDate" class="form-label mt-4">date</label>
-            <input type="date" class="form-control" id="exampleInputDate1" placeholder="date" autocomplete="off " name="date" value="<?php echo @$_POST["date"] ?>">
+            <input type="date" class="form-control" id="exampleInputDate1" placeholder="date" autocomplete="off " name="date_naissance" value="<?php echo @$_POST["date_naissance"] ?>">
         </div>
-        <div>
-            <label for="exampleInputPhone" class="form-label mt-4">Phone</label>
-            <input type="phone" pattern="[0-9]{10}" class="form-control" id="exampleInputPhone1" placeholder="Phone (10 digits)" autocomplete="off" name="phone" value="<?php echo @$_POST["phone"] ?>">
-        </div>
+
         <div>
             <label for="exampleInputEmail1" class="form-label mt-4">Email address</label>
             <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="email" value="<?php echo @$_POST["email"] ?>">
         </div>
-        <div>
-            <label for="formFile" class="form-label mt-4">Default file input example</label>
-            <input class="form-control" type="file" id="formFile">
-        </div>
-        <div>
-            <label for="exampleInputPassword1" class="form-label mt-4">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off " name="password" value="<?php echo @$_POST["password"] ?>">
-        </div>
-
         <button type="submit" class="btn btn-success" name="envoyer">Send</button>
     </div>
 </form>
